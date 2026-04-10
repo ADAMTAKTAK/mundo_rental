@@ -35,11 +35,18 @@ if (!$user_data) {
         <div class="bg-blue-900 px-8 py-8 flex justify-between items-center">
             <div>
                 <h2 class="text-2xl font-bold text-white">Mi Perfil</h2>
-                <p class="text-blue-200 text-sm">Gestiona tu información</p>
+                <p class="text-blue-200 text-sm">Gestiona tu información y reservas</p>
             </div>
-            <a href="../../index.php" class="text-white hover:text-blue-200">
-                <i class="fa-solid fa-house"></i>
-            </a>
+            <div class="flex gap-4">
+                <a href="../reservas/mis_reservas.php" class="text-white hover:text-blue-200 flex flex-col items-center gap-1" title="Mis Reservas">
+                    <i class="fa-solid fa-rectangle-list"></i>
+                    <span class="text-[10px] uppercase font-bold">Reservas</span>
+                </a>
+                <a href="../../index.php" class="text-white hover:text-blue-200 flex flex-col items-center gap-1">
+                    <i class="fa-solid fa-house"></i>
+                    <span class="text-[10px] uppercase font-bold">Inicio</span>
+                </a>
+            </div>
         </div>
 
         <div class="p-8">

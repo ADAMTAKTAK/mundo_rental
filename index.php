@@ -1,17 +1,28 @@
 <?php
-// 1. Iniciamos la sesión en el servidor
+// 1. Iniciamos la sesión
 session_start();
 
 // 2. Conectamos a la base de datos
 require_once 'config/database_connection.php';
 
-// 3. Verificamos si hay una sesión activa y sacamos los datos
+// 3. Verificamos la sesión
 $is_logged_in = isset($_SESSION['user_id']);
 $role = $is_logged_in ? $_SESSION['role'] : null;
 $username = $is_logged_in ? $_SESSION['username'] : '';
 
-// 4. Consultamos los vehículos DISPONIBLES y buscamos su tarifa actual
-// Usamos una subconsulta para buscar el Monto_Diario en la tabla tarifas según la fecha de hoy
+// 4. NUEVO: Verificar si es un cliente con datos legales completos
+$is_valid_client = false;
+if ($is_logged_in && $role === 'Cliente') {
+    $stmt_check = $connection->prepare("SELECT ID_Cliente FROM usuarios WHERE ID_Usuario = ?");
+    $stmt_check->bind_param("i", $_SESSION['user_id']);
+    $stmt_check->execute();
+    $res_check = $stmt_check->get_result()->fetch_assoc();
+    if (!empty($res_check['ID_Cliente'])) {
+        $is_valid_client = true;
+    }
+}
+
+// 5. Consultamos los vehículos DISPONIBLES y su tarifa
 $query_vehiculos = "
     SELECT v.*, 
            (SELECT Monto_Diario FROM tarifas t 
@@ -78,7 +89,38 @@ $resultado_vehiculos = $connection->query($query_vehiculos);
         </div>
     </header>
 
-    <main class="flex-grow">
+    <main class="flex-grow relative">
+
+        <div class="absolute top-4 left-0 right-0 z-50 flex flex-col items-center gap-2 pointer-events-none px-4">
+            <?php if(isset($_GET['info']) && $_GET['info'] == 'registro_requerido'): ?>
+                <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-800 p-4 rounded-lg shadow-lg pointer-events-auto w-full max-w-2xl animate-fade-in">
+                    <p class="font-bold"><i class="fa-solid fa-circle-info mr-2"></i> ¡Hola! Debes registrarte primero</p>
+                    <p class="text-sm">Para poder reservar un vehículo necesitamos tus datos legales para el contrato.</p>
+                </div>
+            <?php endif; ?>
+
+            <?php if(isset($_GET['success']) && $_GET['success'] == 'mensaje_enviado'): ?>
+                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg shadow-lg pointer-events-auto w-full max-w-2xl animate-fade-in">
+                    <p class="font-bold"><i class="fa-solid fa-paper-plane mr-2"></i> ¡Mensaje Enviado!</p>
+                    <p class="text-sm">Hemos recibido tu consulta. Nuestro equipo te contactará muy pronto.</p>
+                </div>
+            <?php endif; ?>
+
+            <?php if(isset($_GET['error']) && $_GET['error'] == 'perfil_incompleto'): ?>
+                <div class="bg-orange-100 border-l-4 border-orange-500 text-orange-800 p-4 rounded-lg shadow-lg pointer-events-auto w-full max-w-2xl animate-fade-in">
+                    <p class="font-bold"><i class="fa-solid fa-id-card mr-2"></i> Perfil Incompleto</p>
+                    <p class="text-sm">Tu cuenta no tiene una cédula ni licencia asociada. Por favor, crea una cuenta nueva con todos tus datos.</p>
+                </div>
+            <?php endif; ?>
+
+            <?php if(isset($_GET['success']) && $_GET['success'] == 'reserva_completada'): ?>
+                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg shadow-lg pointer-events-auto w-full max-w-2xl animate-fade-in">
+                    <p class="font-bold"><i class="fa-solid fa-circle-check mr-2"></i> ¡Reserva Exitosa!</p>
+                    <p class="text-sm">Tu vehículo ha sido reservado. Puedes ver los detalles en tu perfil.</p>
+                </div>
+            <?php endif; ?>
+        </div>
+
         <div class="bg-gradient-to-br from-blue-900 to-blue-700 text-white py-20 lg:py-32 overflow-hidden relative">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center md:text-left flex flex-col md:flex-row items-center justify-between">
                 <div class="md:w-1/2 mb-10 md:mb-0 animate-fade-in">
@@ -136,9 +178,24 @@ $resultado_vehiculos = $connection->query($query_vehiculos);
                                             <span class="text-xs text-gray-500 block">/día</span>
                                         </div>
                                     </div>
-                                    <a href="views/reservas/checkout.php?id=<?php echo $carro['ID_Vehiculo']; ?>" class="block w-full text-center py-3 bg-blue-50 text-blue-900 font-bold rounded-lg hover:bg-blue-900 hover:text-white transition-colors">
-                                        Reservar Ahora
-                                    </a>
+                                    
+                                    <?php if (!$is_logged_in): ?>
+                                        <a href="index.php?info=registro_requerido" class="block w-full text-center py-3 bg-blue-50 text-blue-900 font-bold rounded-lg hover:bg-blue-900 hover:text-white transition-colors">
+                                            Reservar Ahora
+                                        </a>
+                                    <?php elseif ($role === 'Cliente' && !$is_valid_client): ?>
+                                        <a href="index.php?error=perfil_incompleto" class="block w-full text-center py-3 bg-orange-100 text-orange-800 font-bold rounded-lg hover:bg-orange-600 hover:text-white transition-colors">
+                                            <i class="fa-solid fa-id-card mr-1"></i> Completar Registro
+                                        </a>
+                                    <?php elseif ($role === 'Admin'): ?>
+                                        <button disabled class="block w-full text-center py-3 bg-gray-100 text-gray-400 font-bold rounded-lg cursor-not-allowed">
+                                            Solo Clientes
+                                        </button>
+                                    <?php else: ?>
+                                        <a href="views/reservas/checkout.php?id=<?php echo $carro['ID_Vehiculo']; ?>" class="block w-full text-center py-3 bg-blue-50 text-blue-900 font-bold rounded-lg hover:bg-blue-900 hover:text-white transition-colors">
+                                            Reservar Ahora
+                                        </a>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         <?php endwhile; ?>
@@ -182,6 +239,75 @@ $resultado_vehiculos = $connection->query($query_vehiculos);
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-3">Soporte Local</h3>
                         <p class="text-gray-500">Estamos en Margarita. Si nos necesitas, nuestro equipo te asiste rápidamente en cualquier punto de la isla.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="py-20 bg-white border-t border-gray-100" id="contacto">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold text-gray-900">Contáctanos</h2>
+                    <p class="mt-4 text-gray-500">¿Tienes alguna solicitud especial o duda sobre tu reserva? Escríbenos.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 bg-gray-50 rounded-3xl overflow-hidden shadow-sm border border-gray-100">
+                    
+                    <div class="bg-blue-900 text-white p-10 md:p-12 flex flex-col justify-center">
+                        <h3 class="text-2xl font-bold mb-6">Información de la Agencia</h3>
+                        <p class="text-blue-200 mb-8 leading-relaxed">Estamos ubicados estratégicamente para atenderte desde tu llegada a la isla. Operamos todos los días del año.</p>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start gap-4">
+                                <i class="fa-solid fa-location-dot mt-1 text-xl text-blue-300"></i>
+                                <div>
+                                    <p class="font-bold text-white">Oficina Principal</p>
+                                    <p class="text-blue-200 text-sm">Av. Aldonza Manrique, Pampatar<br>Isla de Margarita, Venezuela.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <i class="fa-solid fa-phone mt-1 text-xl text-blue-300"></i>
+                                <div>
+                                    <p class="font-bold text-white">Llámanos</p>
+                                    <p class="text-blue-200 text-sm">+58 (0295) 262-0000<br>Atención 24/7 para emergencias</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <i class="fa-solid fa-envelope mt-1 text-xl text-blue-300"></i>
+                                <div>
+                                    <p class="font-bold text-white">Correo Electrónico</p>
+                                    <p class="text-blue-200 text-sm">reservas@mundorental.com</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-10 md:p-12">
+                        <form action="index.php" method="GET" class="space-y-6">
+                            <input type="hidden" name="success" value="mensaje_enviado">
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Tu Nombre</label>
+                                    <input required type="text" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-900 outline-none bg-white">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Tu Correo</label>
+                                    <input required type="email" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-900 outline-none bg-white">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Asunto</label>
+                                <input required type="text" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-900 outline-none bg-white">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Mensaje</label>
+                                <textarea required rows="4" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-900 outline-none bg-white resize-none"></textarea>
+                            </div>
+                            <button type="submit" class="w-full py-4 bg-blue-900 text-white font-bold rounded-xl shadow-lg hover:bg-blue-800 transition-colors">
+                                Enviar Mensaje
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

@@ -18,7 +18,7 @@ $vehiculos_alquilados = $res_alquilados->fetch_assoc()['alquilados'];
 $vehiculos_disponibles = $total_vehiculos - $vehiculos_alquilados;
 
 // 3. LÓGICA DE PAGINACIÓN PARA EL INVENTARIO
-$registros_por_pagina = 5; // Cantidad de carros por página
+$registros_por_pagina = 10; // Cantidad de carros por página
 $total_paginas = ceil($total_vehiculos / $registros_por_pagina);
 
 $pagina_actual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
@@ -40,30 +40,38 @@ $inventario = $connection->query($query_inventario);
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100 flex h-screen overflow-hidden"> <aside class="w-64 bg-blue-900 text-white flex flex-col flex-shrink-0"> <div class="h-20 flex items-center justify-center border-b border-blue-800">
-            <i class="fa-solid fa-car text-2xl mr-2"></i>
-            <span class="font-bold text-lg tracking-widest">ADMIN PANEL</span>
-        </div>
-        <nav class="flex-1 px-4 py-6 space-y-2">
-            <a href="dashboard.php" class="flex items-center gap-3 bg-blue-800 px-4 py-3 rounded-lg text-white font-medium">
+<body class="bg-gray-100 flex h-screen overflow-hidden"> 
+    <aside class="w-64 bg-blue-900 text-white flex flex-col flex-shrink-0">
+    <div class="h-20 flex items-center justify-center border-b border-blue-800">
+        <i class="fa-solid fa-car text-2xl mr-2"></i>
+        <span class="font-bold text-lg tracking-widest">ADMIN PANEL</span>
+    </div>
+    <nav class="flex-1 px-4 py-6 space-y-2">
+            <a href="dashboard.php" class="flex items-center gap-3 <?php echo basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'bg-blue-800' : 'text-blue-200 hover:bg-blue-800 hover:text-white'; ?> px-4 py-3 rounded-lg font-medium transition-colors">
                 <i class="fa-solid fa-chart-pie w-5"></i> Resumen
             </a>
-            <a href="dashboard.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-blue-200 hover:bg-blue-800 hover:text-white transition-colors">
+            <a href="vehiculos.php" class="flex items-center gap-3 <?php echo basename($_SERVER['PHP_SELF']) == 'vehiculos.php' ? 'bg-blue-800' : 'text-blue-200 hover:bg-blue-800 hover:text-white'; ?> px-4 py-3 rounded-lg font-medium transition-colors">
                 <i class="fa-solid fa-car-side w-5"></i> Mi Flota
             </a>
-            <a href="tarifas.php" class="flex items-center gap-3 px-4 py-3 rounded-lg text-blue-200 hover:bg-blue-800 hover:text-white transition-colors">
+            <a href="tarifas.php" class="flex items-center gap-3 <?php echo basename($_SERVER['PHP_SELF']) == 'tarifas.php' ? 'bg-blue-800' : 'text-blue-200 hover:bg-blue-800 hover:text-white'; ?> px-4 py-3 rounded-lg font-medium transition-colors">
                 <i class="fa-solid fa-tags w-5"></i> Tarifas
             </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-blue-200 hover:bg-blue-800 hover:text-white transition-colors">
-                <i class="fa-solid fa-file-invoice-dollar w-5"></i> Contratos (Alquileres)
+            <a href="clientes.php" class="flex items-center gap-3 <?php echo basename($_SERVER['PHP_SELF']) == 'clientes.php' ? 'bg-blue-800' : 'text-blue-200 hover:bg-blue-800 hover:text-white'; ?> px-4 py-3 rounded-lg font-medium transition-colors">
+                <i class="fa-solid fa-users w-5"></i> Clientes
+            </a>
+            <a href="alquileres.php" class="flex items-center gap-3 <?php echo basename($_SERVER['PHP_SELF']) == 'alquileres.php' ? 'bg-blue-800' : 'text-blue-200 hover:bg-blue-800 hover:text-white'; ?> px-4 py-3 rounded-lg font-medium transition-colors">
+                <i class="fa-solid fa-file-invoice-dollar w-5"></i> Contratos
+            </a>
+            <a href="reportes.php" class="flex items-center gap-3 <?php echo basename($_SERVER['PHP_SELF']) == 'reportes.php' ? 'bg-blue-800 text-white' : 'text-blue-200 hover:bg-blue-800 hover:text-white'; ?> px-4 py-3 rounded-lg font-medium transition-colors">
+                <i class="fa-solid fa-file-lines w-5"></i> Reportes
             </a>
         </nav>
-        <div class="p-4 border-t border-blue-800">
-            <a href="../../index.php" class="flex items-center gap-3 text-blue-200 hover:text-white transition-colors text-sm">
-                <i class="fa-solid fa-arrow-left"></i> Volver a la Web
-            </a>
-        </div>
-    </aside>
+    <div class="p-4 border-t border-blue-800">
+        <a href="../../index.php" class="flex items-center gap-3 text-blue-200 hover:text-white transition-colors text-sm">
+            <i class="fa-solid fa-arrow-left"></i> Volver a la Web
+        </a>
+    </div>
+</aside>
 
     <main class="flex-1 flex flex-col overflow-y-auto"> <header class="h-20 bg-white shadow-sm flex items-center justify-between px-8 sticky top-0 z-10">
             <h1 class="text-2xl font-bold text-gray-800">Dashboard General</h1>
@@ -150,9 +158,16 @@ $inventario = $connection->query($query_inventario);
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-right">
-                                    <button class="text-blue-600 hover:text-blue-900 mx-1" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
-                                    <a href="tarifas.php" class="text-gray-400 hover:text-gray-600 mx-1" title="Gestionar Tarifas">
+                                    <a href="editar_vehiculo.php?id=<?php echo $vehiculo['ID_Vehiculo']; ?>" class="text-blue-600 hover:text-blue-900 mx-1 inline-block" title="Editar">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    
+                                    <a href="tarifas.php" class="text-gray-400 hover:text-gray-600 mx-1 inline-block" title="Gestionar Tarifas">
                                         <i class="fa-solid fa-hand-holding-dollar"></i>
+                                    </a>
+
+                                    <a href="../../controllers/eliminar_vehiculo.php?id=<?php echo $vehiculo['ID_Vehiculo']; ?>" onclick="return confirm('¿Estás seguro de que deseas eliminar este vehículo?');" class="text-red-400 hover:text-red-700 mx-1 inline-block" title="Eliminar">
+                                        <i class="fa-solid fa-trash"></i>
                                     </a>
                                 </td>
                             </tr>
