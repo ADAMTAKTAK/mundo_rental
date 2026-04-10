@@ -138,10 +138,11 @@ $resultado_vehiculos = $connection->query($query_vehiculos);
                     </div>
                 </div>
                 <div class="md:w-1/2 flex justify-center animate-fade-in" style="animation-delay: 0.2s;">
-                    <div class="w-full max-w-md aspect-video bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 flex items-center justify-center p-8 shadow-2xl">
-                        <i class="fa-solid fa-car-side text-8xl text-white/50"></i>
-                    </div>
+                  <div class="w-full max-w-md aspect-video bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 flex items-center justify-center p-8 shadow-2xl">
+                    <img src="assets/img/logo.png" alt="Logo de la Empresa" class="max-h-full max-w-full object-contain">   
+                  </div>
                 </div>
+
             </div>
         </div>
 
