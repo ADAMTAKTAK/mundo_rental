@@ -83,6 +83,33 @@ $resultado_tarifas = $connection->query($query_tarifas);
         </header>
 
         <div class="p-8 flex-1">
+            <?php if(isset($_GET['success'])): ?>
+                <div class="bg-green-100 text-green-700 p-4 mb-6 rounded-lg text-sm font-semibold">
+                    <?php 
+                        if($_GET['success'] == '1') echo '<i class="fa-solid fa-check mr-2"></i> Tarifa creada exitosamente.';
+                        if($_GET['success'] == 'actualizado') echo '<i class="fa-solid fa-check mr-2"></i> Tarifa actualizada con éxito.';
+                        if($_GET['success'] == 'eliminado') echo '<i class="fa-solid fa-trash mr-2"></i> Tarifa eliminada del sistema.';
+                    ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if(isset($_GET['error'])): ?>
+                <div class="bg-red-100 text-red-700 p-4 mb-6 rounded-lg text-sm font-semibold border-l-4 border-red-500">
+                    <?php 
+                        if($_GET['error'] == 'tarifa_activa') echo '<i class="fa-solid fa-triangle-exclamation mr-2"></i> No puedes eliminar una tarifa que está actualmente en uso o programada para el futuro.';
+                        if($_GET['error'] == 'editar_activa') echo '<i class="fa-solid fa-shield-halved mr-2"></i> Por seguridad, no puedes editar una tarifa que ya entró en vigencia o que pertenece al pasado. Solo puedes editar tarifas futuras.';
+                    ?>
+                </div>
+            <?php endif; ?>
+            <?php if(isset($_GET['success'])): ?>
+                <div class="bg-green-100 text-green-700 p-4 mb-6 rounded-lg text-sm font-semibold">
+                    <?php 
+                        if($_GET['success'] == '1') echo '<i class="fa-solid fa-check mr-2"></i> Tarifa creada exitosamente.';
+                        if($_GET['success'] == 'actualizado') echo '<i class="fa-solid fa-check mr-2"></i> Tarifa actualizada con éxito.';
+                        if($_GET['success'] == 'eliminado') echo '<i class="fa-solid fa-trash mr-2"></i> Tarifa eliminada del sistema.';
+                    ?>
+                </div>
+            <?php endif; ?>
             <div class="flex justify-between items-center mb-8">
                 <p class="text-gray-500">Administra los precios por temporada de tus vehículos.</p>
                 <a href="nueva_tarifa.php" class="bg-blue-900 hover:bg-blue-800 text-white px-4 py-2 rounded-lg font-semibold transition-all shadow-md">
@@ -98,6 +125,7 @@ $resultado_tarifas = $connection->query($query_tarifas);
                             <th class="px-6 py-4">Monto Diario</th>
                             <th class="px-6 py-4">Vigencia (Desde - Hasta)</th>
                             <th class="px-6 py-4">Estado</th>
+                            <th class="px-6 py-4 text-right">Acciones</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
@@ -115,10 +143,33 @@ $resultado_tarifas = $connection->query($query_tarifas);
                                 <?php 
                                 $hoy = date('Y-m-d');
                                 $activa = ($hoy >= $t['Fecha_Inicio'] && $hoy <= $t['Fecha_Fin']);
+                                $futura = ($t['Fecha_Inicio'] > $hoy);
+                                $pasada = ($t['Fecha_Fin'] < $hoy);
                                 ?>
                                 <span class="px-2 py-1 rounded-full text-xs font-bold <?php echo $activa ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'; ?>">
-                                    <?php echo $activa ? 'Activa' : 'Expirada/Futura'; ?>
+                                    <?php echo $activa ? 'Activa' : ($futura ? 'Futura' : 'Vencida'); ?>
                                 </span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <?php if($futura): ?>
+                                    <a href="editar_tarifa.php?id=<?php echo $t['ID_Tarifa']; ?>" class="text-blue-600 hover:text-blue-900 mx-1 inline-block" title="Editar Tarifa">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                <?php else: ?>
+                                    <span class="text-gray-300 mx-1 inline-block cursor-not-allowed" title="No modificable (Activa o Pasada)">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </span>
+                                <?php endif; ?>
+
+                                <?php if($pasada): ?>
+                                    <a href="../../controllers/eliminar_tarifa.php?id=<?php echo $t['ID_Tarifa']; ?>" onclick="return confirm('¿Estás seguro de que deseas eliminar esta tarifa?');" class="text-red-400 hover:text-red-700 mx-1 inline-block" title="Eliminar">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                <?php else: ?>
+                                    <span class="text-gray-300 mx-1 inline-block cursor-not-allowed" title="No se puede eliminar (Activa o Futura)">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </span>
+                                <?php endif; ?>
                             </td>
                         </tr>
                         <?php endwhile; ?>
