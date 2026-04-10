@@ -13,13 +13,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_SESSION['role'] === 'Admin') {
     $id_categoria = $_POST['id_categoria'];
     $estado = $_POST['estado'];
 
-    // 1. Obtener la ruta de la imagen actual por si no se cambia
     $stmt_img = $connection->prepare("SELECT Imagen_URL FROM vehiculos WHERE ID_Vehiculo = ?");
     $stmt_img->bind_param("i", $id_vehiculo);
     $stmt_img->execute();
     $ruta_db = $stmt_img->get_result()->fetch_assoc()['Imagen_URL'];
 
-    // 2. Procesar nueva imagen si existe
     if (isset($_FILES['foto_carro']) && $_FILES['foto_carro']['error'] === UPLOAD_ERR_OK) {
         $carpeta_destino = '../assets/img/vehiculos/';
         $nombre_original = basename($_FILES['foto_carro']['name']);
@@ -31,7 +29,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_SESSION['role'] === 'Admin') {
         }
     }
 
-    // 3. Actualizar Base de Datos
     $query = "UPDATE vehiculos SET ID_Categoria=?, Placa=?, Marca=?, Modelo=?, Anio=?, Color=?, Capacidad=?, Estado=?, Imagen_URL=? WHERE ID_Vehiculo=?";
     $stmt = $connection->prepare($query);
     $stmt->bind_param("isssisissi", $id_categoria, $placa, $marca, $modelo, $anio, $color, $capacidad, $estado, $ruta_db, $id_vehiculo);

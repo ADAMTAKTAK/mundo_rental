@@ -7,7 +7,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
     exit();
 }
 
-// Mensajes de alerta
 $mensaje = '';
 if(isset($_GET['success']) && $_GET['success'] == 'eliminado') {
     $mensaje = '<div class="bg-green-100 text-green-700 p-4 mb-6 rounded-lg text-sm font-semibold"><i class="fa-solid fa-check mr-2"></i>Cliente y su cuenta de usuario eliminados con éxito.</div>';
@@ -19,7 +18,6 @@ if(isset($_GET['error']) && $_GET['error'] == 'auto_eliminacion') {
     $mensaje = '<div class="bg-red-100 text-red-700 p-4 mb-6 rounded-lg text-sm font-semibold"><i class="fa-solid fa-shield-halved mr-2"></i>Por seguridad, el sistema no permite que elimines tu propia cuenta administrativa.</div>';
 }
 
-// Lógica de Paginación
 $res_total = $connection->query("SELECT COUNT(*) as total FROM clientes");
 $total_clientes = $res_total->fetch_assoc()['total'];
 $registros_por_pagina = 10;
@@ -29,7 +27,6 @@ if ($pagina_actual < 1) $pagina_actual = 1;
 if ($pagina_actual > $total_paginas && $total_paginas > 0) $pagina_actual = $total_paginas;
 $offset = max(0, ($pagina_actual - 1) * $registros_por_pagina);
 
-// Consulta principal: Clientes + Su usuario asociado (LEFT JOIN)
 $query = "
     SELECT c.*, u.Username, u.Rol, u.ID_Usuario 
     FROM clientes c 

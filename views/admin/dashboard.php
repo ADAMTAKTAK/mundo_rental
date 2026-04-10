@@ -2,13 +2,11 @@
 session_start();
 require_once '../../config/database_connection.php';
 
-// 1. SEGURIDAD EXTREMA
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
     header("Location: ../auth/login.php");
     exit();
 }
 
-// 2. CONSULTAS DE MÉTRICAS RÁPIDAS
 $res_total = $connection->query("SELECT COUNT(*) as total FROM vehiculos");
 $total_vehiculos = $res_total->fetch_assoc()['total'];
 
@@ -17,8 +15,7 @@ $vehiculos_alquilados = $res_alquilados->fetch_assoc()['alquilados'];
 
 $vehiculos_disponibles = $total_vehiculos - $vehiculos_alquilados;
 
-// 3. LÓGICA DE PAGINACIÓN PARA EL INVENTARIO
-$registros_por_pagina = 10; // Cantidad de carros por página
+$registros_por_pagina = 10;
 $total_paginas = ceil($total_vehiculos / $registros_por_pagina);
 
 $pagina_actual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
@@ -27,7 +24,6 @@ if ($pagina_actual > $total_paginas && $total_paginas > 0) $pagina_actual = $tot
 
 $offset = max(0, ($pagina_actual - 1) * $registros_por_pagina);
 
-// 4. CONSULTA PARA LA TABLA DE INVENTARIO (CON LIMIT)
 $query_inventario = "SELECT * FROM vehiculos ORDER BY Marca, Modelo LIMIT $offset, $registros_por_pagina";
 $inventario = $connection->query($query_inventario);
 ?>

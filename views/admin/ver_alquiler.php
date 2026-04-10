@@ -2,7 +2,6 @@
 session_start();
 require_once '../../config/database_connection.php';
 
-// Seguridad: Solo Admins
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
     header("Location: ../auth/login.php");
     exit();
@@ -15,7 +14,6 @@ if (!isset($_GET['id'])) {
 
 $id_alquiler = (int)$_GET['id'];
 
-// 1. CONSULTA PRINCIPAL (Cabecera del contrato)
 $query = "
     SELECT a.*, 
            c.Nombre AS CliNom, c.Apellido AS CliApe, c.Tipo_Documento, c.Numero_Documento, c.Telefono, c.Email, c.Licencia_Conducir,
@@ -35,7 +33,6 @@ if (!$alquiler) {
     exit();
 }
 
-// 2. CONSULTA DE EXTRAS (Servicios y Accesorios)
 $servicios = $connection->query("
     SELECT s.Nombre, asrv.Precio_Cobrado 
     FROM alquiler_servicios asrv

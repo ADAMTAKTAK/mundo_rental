@@ -4,7 +4,6 @@ require_once '../config/database_connection.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && $_SESSION['role'] === 'Admin') {
     
-    // Datos Legales
     $nombre = trim($_POST['nombre']);
     $apellido = trim($_POST['apellido']);
     $tipo_doc = $_POST['tipo_doc'];
@@ -13,21 +12,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_SESSION['role'] === 'Admin') {
     $email = trim($_POST['email']);
     $licencia = trim($_POST['licencia']);
     
-    // Datos de Cuenta
     $username = trim($_POST['username']);
     $password = $_POST['password'];
 
     $connection->begin_transaction();
 
     try {
-        // 1. Crear Cliente Físico
         $stmt_c = $connection->prepare("INSERT INTO clientes (Tipo_Documento, Numero_Documento, Nombre, Apellido, Telefono, Licencia_Conducir, Email) VALUES (?, ?, ?, ?, ?, ?, ?)");
         $stmt_c->bind_param("sssssss", $tipo_doc, $num_doc, $nombre, $apellido, $telefono, $licencia, $email);
         $stmt_c->execute();
         
         $id_cliente = $connection->insert_id;
 
-        // 2. Si el Admin llenó los campos de usuario, creamos la cuenta web
         if (!empty($username) && !empty($password)) {
             $rol = 'Cliente';
             $stmt_u = $connection->prepare("INSERT INTO usuarios (Username, Password, Nombre, Apellido, Email, Rol, ID_Cliente) VALUES (?, ?, ?, ?, ?, ?, ?)");

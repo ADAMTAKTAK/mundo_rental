@@ -13,20 +13,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_SESSION['role'] === 'Admin') {
         $servicios_seleccionados = isset($_POST['servicios']) ? $_POST['servicios'] : [];
         $accesorios_seleccionados = isset($_POST['accesorios']) ? $_POST['accesorios'] : [];
         
-        // 1. Obtener Tarifa
         $stmt_t = $connection->prepare("SELECT Monto_Diario FROM tarifas WHERE ID_Vehiculo = ? AND CURDATE() BETWEEN Fecha_Inicio AND Fecha_Fin LIMIT 1");
         $stmt_t->bind_param("i", $id_vehiculo);
         $stmt_t->execute();
         $precio_base = $stmt_t->get_result()->fetch_assoc()['Monto_Diario'];
 
-        // 2. Inteligencia de Estado (Reservado o En Curso)
         $dt_salida = new DateTime($fecha_salida);
-        $dt_ahora = new DateTime(); // La fecha y hora exactas de este momento
+        $dt_ahora = new DateTime();
         
-        // Si el alquiler empieza en el futuro (después de hoy), queda Reservado. Si no, empieza de una vez.
         $estado_inicial = ($dt_salida > $dt_ahora) ? 'Reservado' : 'En Curso';
 
-        // 3. Matemáticas
         $dt2 = new DateTime($fecha_devolucion);
         $horas = round(($dt_salida->diff($dt2)->days * 24) + $dt_salida->diff($dt2)->h);
         $dias = floor($horas / 24);
@@ -47,10 +43,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_SESSION['role'] === 'Admin') {
 
         $monto_total = ($dias * $precio_base) + ($h_extra * 10) + $total_fijo + $total_acc + 100.00;
 
-        // 4. GUARDAR
         $connection->begin_transaction();
 
-        // Creamos la reserva con el Estado Dinámico ($estado_inicial)
         $stmt_ins = $connection->prepare("INSERT INTO alquileres (ID_Cliente, ID_Vehiculo, Fecha_Salida, Fecha_Devolucion_Prevista, Monto_Total, Deposito_Garantia, Estado_Deposito, Estado, Tiene_Servicios, Tiene_Accesorios) VALUES (?, ?, ?, ?, ?, 100.00, 'Retenido', ?, ?, ?)");
         $has_s = !empty($servicios_seleccionados) ? 1 : 0;
         $has_a = !empty($accesorios_seleccionados) ? 1 : 0;
@@ -58,7 +52,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_SESSION['role'] === 'Admin') {
         $stmt_ins->execute();
         $id_alquiler = $connection->insert_id;
 
-        // Insertar Detalles
         foreach($servicios_seleccionados as $s) {
             $connection->query("INSERT INTO alquiler_servicios (ID_Alquiler, ID_Servicio, Precio_Cobrado) SELECT $id_alquiler, ID_Servicio, Precio_Base FROM servicios WHERE ID_Servicio = $s");
         }

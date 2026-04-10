@@ -13,7 +13,6 @@ $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $user_data = $stmt->get_result()->fetch_assoc();
 
-// NUEVO ESCUDO: Si no encuentra los datos, la sesión está corrupta. Lo deslogueamos.
 if (!$user_data) {
     header("Location: ../../controllers/logout_controller.php");
     exit();

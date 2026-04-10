@@ -15,7 +15,6 @@ if (!isset($_GET['id'])) {
 $id_alquiler = (int)$_GET['id'];
 $id_usuario = $_SESSION['user_id'];
 
-// Consultar la reserva asegurando que pertenezca al usuario logueado (Seguridad)
 $query = "
     SELECT a.*, 
            c.Nombre AS CliNom, c.Apellido AS CliApe, c.Tipo_Documento, c.Numero_Documento, c.Telefono, c.Email,
@@ -36,7 +35,6 @@ if (!$reserva) {
     exit();
 }
 
-// Consultar extras para el desglose
 $servicios = $connection->query("SELECT s.Nombre, asrv.Precio_Cobrado FROM alquiler_servicios asrv JOIN servicios s ON asrv.ID_Servicio = s.ID_Servicio WHERE asrv.ID_Alquiler = $id_alquiler");
 $accesorios = $connection->query("SELECT acc.Nombre, aacc.Cantidad, aacc.Precio_Cobrado FROM alquiler_accesorios aacc JOIN accesorios acc ON aacc.ID_Accesorio = acc.ID_Accesorio WHERE aacc.ID_Alquiler = $id_alquiler");
 ?>

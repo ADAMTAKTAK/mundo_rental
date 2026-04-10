@@ -7,7 +7,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
     exit();
 }
 
-// Mensajes de éxito o error para las acciones de eliminar/editar
 $mensaje = '';
 if(isset($_GET['success']) && $_GET['success'] == 'eliminado') {
     $mensaje = '<div class="bg-green-100 text-green-700 p-4 mb-6 rounded-lg text-sm font-semibold"><i class="fa-solid fa-check mr-2"></i>Vehículo eliminado de la flota con éxito.</div>';
@@ -16,7 +15,6 @@ if(isset($_GET['error']) && $_GET['error'] == 'en_uso') {
     $mensaje = '<div class="bg-red-100 text-red-700 p-4 mb-6 rounded-lg text-sm font-semibold"><i class="fa-solid fa-triangle-exclamation mr-2"></i>No se puede eliminar el vehículo porque ya tiene contratos de alquiler o tarifas asociadas en el historial. Intenta cambiar su estado a Mantenimiento.</div>';
 }
 
-// Consulta de toda la flota unida con categorías
 $query = "SELECT v.*, c.Nombre as Categoria 
           FROM vehiculos v 
           LEFT JOIN categorias c ON v.ID_Categoria = c.ID_Categoria 

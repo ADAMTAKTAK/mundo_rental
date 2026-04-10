@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 10-04-2026 a las 03:12:18
+-- Tiempo de generación: 10-04-2026 a las 13:11:16
 -- Versión del servidor: 8.0.30
 -- Versión de PHP: 8.1.10
 
@@ -412,7 +412,7 @@ INSERT INTO `tarifas` (`ID_Tarifa`, `ID_Vehiculo`, `Monto_Diario`, `Fecha_Inicio
 (37, 5, 50.00, '2026-10-26', '2026-12-31'),
 (38, 6, 65.00, '2026-10-26', '2026-12-31'),
 (39, 7, 40.00, '2026-10-26', '2026-12-31'),
-(40, 8, 85.00, '2026-10-26', '2026-12-31'),
+(40, 8, 86.00, '2026-10-26', '2026-12-31'),
 (41, 11, 80.00, '2026-04-08', '2026-05-08'),
 (42, 11, 80.00, '2026-04-09', '2026-12-09');
 
@@ -466,16 +466,16 @@ CREATE TABLE `vehiculos` (
 --
 
 INSERT INTO `vehiculos` (`ID_Vehiculo`, `ID_Categoria`, `Placa`, `Marca`, `Modelo`, `Anio`, `Color`, `Capacidad`, `Estado`, `Imagen_URL`) VALUES
-(1, 1, 'AB123CD', 'Toyota', 'Yaris', 2022, 'Plata', 5, 'Disponible', 'https://images.unsplash.com/photo-1590362891991-f776e747a588auto=format&fit=crop&q=80&w=800'),
-(2, 1, 'EF456GH', 'Toyota', 'Corolla', 2023, 'Blanco', 5, 'Disponible', 'https://images.unsplash.com/photo-1590362891991-f776e747a588auto=format&fit=crop&q=80&w=800'),
-(3, 2, 'IJ789KL', 'Toyota', '4Runner', 2023, 'Negro', 7, 'Disponible', 'https://images.unsplash.com/photo-1590362891991-f776e747a588auto=format&fit=crop&q=80&w=800'),
-(4, 1, 'MN012OP', 'Honda', 'Civic', 2021, 'Rojo', 5, 'Disponible', 'https://images.unsplash.com/photo-1555353540-64fd1b68ba40?auto=format&fit=crop&q=80&w=800'),
-(5, 2, 'QR345ST', 'Honda', 'CR-V', 2022, 'Gris', 5, 'Disponible', 'https://images.unsplash.com/photo-1555353540-64fd1b68ba40?auto=format&fit=crop&q=80&w=800'),
-(6, 1, 'UV678WX', 'Hyundai', 'Elantra', 2022, 'Azul', 5, 'Disponible', 'https://images.unsplash.com/photo-1633500854449-3e5f2998fc04auto=format&fit=crop&q=80&w=800'),
-(7, 2, 'YZ901AB', 'Hyundai', 'Tucson', 2023, 'Blanco', 5, 'Disponible', 'https://images.unsplash.com/photo-1633500854449-3e5f2998fc04auto=format&fit=crop&q=80&w=800'),
-(8, 1, 'CD234EF', 'Kia', 'Picanto', 2021, 'Amarillo', 4, 'Disponible', 'https://images.unsplash.com/photo-1633500854449-3e5f2998fc04auto=format&fit=crop&q=80&w=800'),
-(9, 2, 'GH567IJ', 'Kia', 'Sportage', 2023, 'Rojo', 5, 'Disponible', 'https://images.unsplash.com/photo-1633500854449-3e5f2998fc04auto=format&fit=crop&q=80&w=800'),
-(10, 3, 'KL890MN', 'Toyota', 'Land Cruiser', 2024, 'Blanco', 7, 'Disponible', 'https://images.unsplash.com/photo-1590362891991-f776e747a588auto=format&fit=crop&q=80&w=800'),
+(1, 1, 'AB123CD', 'Toyota', 'Yaris', 2022, 'Plata', 5, 'Disponible', 'assets/img/vehiculos/1775824987_TOYOTAYARISmlyqem.webp'),
+(2, 1, 'EF456GH', 'Toyota', 'Corolla', 2023, 'Blanco', 5, 'Disponible', 'assets/img/vehiculos/1775825077_P24KNJ2V4VAHXFYOCY35F5G57A.avif'),
+(3, 2, 'IJ789KL', 'Toyota', '4Runner', 2023, 'Negro', 7, 'Disponible', 'assets/img/vehiculos/1775825157_2023toyota4runnerpictureseixbhu40usow4hbh.jpg'),
+(4, 1, 'MN012OP', 'Honda', 'Civic', 2021, 'Rojo', 5, 'Disponible', 'assets/img/vehiculos/1775824401_1775795944NAZb896903ed5984615b7cc4712755f3cdc.jpg'),
+(5, 2, 'QR345ST', 'Honda', 'CR-V', 2022, 'Gris', 5, 'Disponible', 'assets/img/vehiculos/1775824510_311.webp'),
+(6, 1, 'UV678WX', 'Hyundai', 'Elantra', 2022, 'Azul', 5, 'Disponible', 'assets/img/vehiculos/1775824603_maxresdefault1.jpg'),
+(7, 2, 'YZ901AB', 'Hyundai', 'Tucson', 2023, 'Blanco', 5, 'Disponible', 'assets/img/vehiculos/1775824680_whitehyundaitucson20235354mainb54dd91a0035bc20e9b1c9f0a97ad7e7.jpg'),
+(8, 1, 'CD234EF', 'Kia', 'Picanto', 2021, 'Amarillo', 4, 'Disponible', 'assets/img/vehiculos/1775824777_852x568116500x333.webp'),
+(9, 2, 'GH567IJ', 'Kia', 'Sportage', 2023, 'Rojo', 5, 'Disponible', 'assets/img/vehiculos/1775824889_KIASPORTAGEpufybq.webp'),
+(10, 3, 'KL890MN', 'Toyota', 'Land Cruiser', 2024, 'Blanco', 7, 'Disponible', 'assets/img/vehiculos/1775825250_images5.jpg'),
 (11, 3, 'ABI23', 'Ford', 'Mustang', 2025, 'negro', 4, 'Disponible', 'assets/img/vehiculos/1775703432_images4.jpg');
 
 -- --------------------------------------------------------

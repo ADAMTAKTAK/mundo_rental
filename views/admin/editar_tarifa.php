@@ -15,13 +15,11 @@ if (!$tarifa) {
     exit();
 }
 
-// --- ESCUDO VISUAL (REPLICANDO LA LÓGICA DE ELIMINAR) ---
 $hoy = date('Y-m-d');
 if ($tarifa['Fecha_Inicio'] <= $hoy) {
     header("Location: tarifas.php?error=editar_activa");
     exit();
 }
-// --------------------------------------------------------
 
 $vehiculos = $connection->query("SELECT ID_Vehiculo, Marca, Modelo, Placa FROM vehiculos ORDER BY Marca");
 ?>

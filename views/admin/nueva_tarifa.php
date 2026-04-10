@@ -7,7 +7,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
     exit();
 }
 
-// Traemos la lista de vehículos para el selector
 $vehiculos = $connection->query("SELECT ID_Vehiculo, Marca, Modelo, Placa FROM vehiculos ORDER BY Marca");
 ?>
 <!DOCTYPE html>

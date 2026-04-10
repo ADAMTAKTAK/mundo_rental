@@ -1,5 +1,4 @@
 <?php 
-// Iniciamos sesión para verificar si hay errores previos (como credenciales incorrectas)
 session_start(); 
 ?>
 <!DOCTYPE html>

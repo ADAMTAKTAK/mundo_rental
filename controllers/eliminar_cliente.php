@@ -2,7 +2,6 @@
 session_start();
 require_once '../config/database_connection.php';
 
-// Seguridad base
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
     header("Location: ../index.php");
     exit();
@@ -11,18 +10,15 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
 if (isset($_GET['id'])) {
     $id_cliente = (int)$_GET['id'];
 
-    // --- NUEVO ESCUDO DE SEGURIDAD (ANTI AUTO-ELIMINACIÓN) ---
     $stmt_check = $connection->prepare("SELECT ID_Usuario FROM usuarios WHERE ID_Cliente = ?");
     $stmt_check->bind_param("i", $id_cliente);
     $stmt_check->execute();
     $res = $stmt_check->get_result()->fetch_assoc();
 
     if ($res && $res['ID_Usuario'] == $_SESSION['user_id']) {
-        // Es el mismo administrador logueado, lo devolvemos con error
         header("Location: ../views/admin/clientes.php?error=auto_eliminacion");
         exit();
     }
-    // ---------------------------------------------------------
 
     $connection->begin_transaction();
 

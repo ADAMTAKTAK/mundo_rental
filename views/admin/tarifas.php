@@ -7,7 +7,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
     exit();
 }
 
-// 1. LÓGICA DE PAGINACIÓN PARA TARIFAS
 $res_total_tarifas = $connection->query("SELECT COUNT(*) as total FROM tarifas");
 $total_tarifas = $res_total_tarifas->fetch_assoc()['total'];
 
@@ -20,7 +19,6 @@ if ($pagina_actual > $total_paginas && $total_paginas > 0) $pagina_actual = $tot
 
 $offset = max(0, ($pagina_actual - 1) * $registros_por_pagina);
 
-// 2. CONSULTA CON LIMIT
 $query_tarifas = "
     SELECT t.*, v.Marca, v.Modelo, v.Placa 
     FROM tarifas t 

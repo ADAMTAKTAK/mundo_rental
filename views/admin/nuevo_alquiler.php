@@ -195,7 +195,6 @@ $accesorios = $connection->query("SELECT * FROM accesorios WHERE Stock_Total > 0
                 const subVehiculo = (dias * precioDia) + costoHoras;
                 const totalFinal = subVehiculo + totalExtras + 100.00;
 
-                // TEXTO CON DESGLOSE DE HORAS EXTRA (Igual que en checkout)
                 let txtTiempo = `${dias} día(s)`;
                 if (horasExtra > 0) {
                     txtTiempo += `<br><span class="text-[11px] text-blue-300 font-normal mt-1 block">+ ${horasExtra} h extra a $10.00 c/u</span>`;
@@ -213,7 +212,6 @@ $accesorios = $connection->query("SELECT * FROM accesorios WHERE Stock_Total > 0
         inDevolucion.addEventListener('change', recalcular);
         checkboxes.forEach(cb => cb.addEventListener('change', recalcular));
 
-        // Inicializar fecha actual
         const ahora = new Date().toISOString().slice(0, 16);
         inSalida.value = ahora;
     </script>

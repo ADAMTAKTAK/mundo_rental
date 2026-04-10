@@ -2,13 +2,11 @@
 session_start();
 require_once '../../config/database_connection.php';
 
-// Seguridad: Solo Admins
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
     header("Location: ../auth/login.php");
     exit();
 }
 
-// LÓGICA DE PAGINACIÓN
 $res_total = $connection->query("SELECT COUNT(*) as total FROM alquileres");
 $total_contratos = $res_total->fetch_assoc()['total'];
 $registros_por_pagina = 10;
@@ -17,7 +15,6 @@ $pagina_actual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
 if ($pagina_actual < 1) $pagina_actual = 1;
 $offset = max(0, ($pagina_actual - 1) * $registros_por_pagina);
 
-// CONSULTA DE CONTRATOS (Uniendo Alquileres, Clientes y Vehículos)
 $query_contratos = "
     SELECT a.ID_Alquiler, a.Fecha_Salida, a.Fecha_Devolucion_Prevista, a.Monto_Total, a.Estado,
            c.Nombre AS ClienteNombre, c.Apellido AS ClienteApellido, c.Tipo_Documento, c.Numero_Documento,

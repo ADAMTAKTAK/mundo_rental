@@ -7,18 +7,15 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
     exit();
 }
 
-// 1. LÓGICA DE FILTROS (Por defecto el mes actual)
 $desde = isset($_GET['desde']) ? $_GET['desde'] : date('Y-m-01');
 $hasta = isset($_GET['hasta']) ? $_GET['hasta'] : date('Y-m-t');
 
-// 2. Ingresos en el rango seleccionado
 $query_ingresos = "SELECT COALESCE(SUM(Monto_Total), 0) as total FROM alquileres WHERE Estado IN ('Finalizado', 'En Curso') AND DATE(Fecha_Salida) BETWEEN ? AND ?";
 $stmt_ingresos = $connection->prepare($query_ingresos);
 $stmt_ingresos->bind_param("ss", $desde, $hasta);
 $stmt_ingresos->execute();
 $ingresos_totales = $stmt_ingresos->get_result()->fetch_assoc()['total'];
 
-// 3. Contratos realizados en el rango seleccionado (Usando la función SQL)
 $query_contratos = "
     SELECT a.ID_Alquiler, a.Fecha_Salida, a.Fecha_Devolucion_Real, a.Monto_Total, a.Estado,
            c.Nombre, c.Apellido, v.Marca, v.Placa,
@@ -34,7 +31,6 @@ $stmt_contratos->bind_param("ss", $desde, $hasta);
 $stmt_contratos->execute();
 $contratos = $stmt_contratos->get_result();
 
-// Cantidad de contratos encontrados
 $total_contratos_rango = $contratos->num_rows;
 ?>
 <!DOCTYPE html>

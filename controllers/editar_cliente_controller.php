@@ -21,15 +21,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_SESSION['role'] === 'Admin') {
     $connection->begin_transaction();
 
     try {
-        // 1. Actualizar Cliente
         $stmt_c = $connection->prepare("UPDATE clientes SET Tipo_Documento=?, Numero_Documento=?, Nombre=?, Apellido=?, Telefono=?, Licencia_Conducir=?, Email=? WHERE ID_Cliente=?");
         $stmt_c->bind_param("sssssssi", $tipo_doc, $num_doc, $nombre, $apellido, $telefono, $licencia, $email, $id_cliente);
         $stmt_c->execute();
 
-        // 2. Lógica del Usuario Web
         if (!empty($username)) {
             if (!empty($id_usuario_existente)) {
-                // Actualizar usuario existente
                 if (!empty($password)) {
                     $stmt_u = $connection->prepare("UPDATE usuarios SET Username=?, Password=?, Nombre=?, Apellido=?, Email=? WHERE ID_Usuario=?");
                     $stmt_u->bind_param("sssssi", $username, $password, $nombre, $apellido, $email, $id_usuario_existente);
@@ -39,8 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_SESSION['role'] === 'Admin') {
                 }
                 $stmt_u->execute();
             } else {
-                // No tenía usuario web, pero el admin llenó el campo: lo creamos
-                if (empty($password)) $password = $num_doc; // Clave por defecto si no le ponen
+                if (empty($password)) $password = $num_doc;
                 $rol = 'Cliente';
                 $stmt_u = $connection->prepare("INSERT INTO usuarios (Username, Password, Nombre, Apellido, Email, Rol, ID_Cliente) VALUES (?, ?, ?, ?, ?, ?, ?)");
                 $stmt_u->bind_param("ssssssi", $username, $password, $nombre, $apellido, $email, $rol, $id_cliente);

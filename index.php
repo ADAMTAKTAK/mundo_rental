@@ -1,16 +1,12 @@
 <?php
-// 1. Iniciamos la sesión
 session_start();
 
-// 2. Conectamos a la base de datos
 require_once 'config/database_connection.php';
 
-// 3. Verificamos la sesión
 $is_logged_in = isset($_SESSION['user_id']);
 $role = $is_logged_in ? $_SESSION['role'] : null;
 $username = $is_logged_in ? $_SESSION['username'] : '';
 
-// 4. NUEVO: Verificar si es un cliente con datos legales completos
 $is_valid_client = false;
 if ($is_logged_in && $role === 'Cliente') {
     $stmt_check = $connection->prepare("SELECT ID_Cliente FROM usuarios WHERE ID_Usuario = ?");
@@ -22,7 +18,6 @@ if ($is_logged_in && $role === 'Cliente') {
     }
 }
 
-// 5. Consultamos los vehículos DISPONIBLES y su tarifa
 $query_vehiculos = "
     SELECT v.*, 
            (SELECT Monto_Diario FROM tarifas t 

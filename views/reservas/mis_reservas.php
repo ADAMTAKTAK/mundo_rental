@@ -7,7 +7,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Cliente') {
     exit();
 }
 
-// 1. Obtener el ID_Cliente legal asociado a este usuario web
 $stmt_user = $connection->prepare("SELECT ID_Cliente FROM usuarios WHERE ID_Usuario = ?");
 $stmt_user->bind_param("i", $_SESSION['user_id']);
 $stmt_user->execute();
@@ -19,7 +18,6 @@ if (empty($user_data['ID_Cliente'])) {
 }
 $id_cliente = $user_data['ID_Cliente'];
 
-// 2. Consultar el historial usando la NUEVA FUNCIÓN SQL para los extras
 $query = "
     SELECT a.ID_Alquiler, a.Fecha_Salida, a.Fecha_Devolucion_Prevista, a.Monto_Total, a.Estado, a.Deposito_Garantia,
            v.Marca, v.Modelo, v.Placa, v.Imagen_URL,

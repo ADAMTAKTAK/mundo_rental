@@ -2,7 +2,6 @@
 session_start();
 require_once '../../config/database_connection.php';
 
-// 1. Validar Sesión
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../auth/login.php?reserva=pendiente");
     exit();
@@ -14,7 +13,6 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
 
 $id_vehiculo = (int)$_GET['id'];
 
-// 2. Traer el vehículo y su precio vigente hoy
 $query = "
     SELECT v.*, 
            (SELECT Monto_Diario FROM tarifas t WHERE t.ID_Vehiculo = v.ID_Vehiculo AND CURDATE() BETWEEN t.Fecha_Inicio AND t.Fecha_Fin LIMIT 1) as Precio_Dia
@@ -30,7 +28,6 @@ if (!$vehiculo || empty($vehiculo['Precio_Dia'])) {
     exit();
 }
 
-// 3. Traer Catálogo de Extras
 $servicios = $connection->query("SELECT * FROM servicios ORDER BY Nombre");
 $accesorios = $connection->query("SELECT * FROM accesorios WHERE Stock_Total > 0 ORDER BY Nombre");
 ?>

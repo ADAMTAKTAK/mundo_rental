@@ -1,35 +1,27 @@
-/* =========================================================
-   MUNDO RENTAL MARGARITA - MAIN STYLESHEET
-   ========================================================= */
-
-/* 1. Importación de Fuente Premium (Inter) */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* 2. Variables Globales (Colores Corporativos) */
 :root {
-    --primary-blue: #1e3a8a; /* Azul corporativo profundo */
-    --hover-blue: #1e40af;   /* Azul para botones al pasar el mouse */
-    --bg-light: #f8fafc;     /* Gris súper claro para el fondo */
-    --text-main: #1f2937;    /* Gris oscuro para lectura cómoda */
-    --danger: #ef4444;       /* Rojo para errores/alertas */
+    --primary-blue: #1e3a8a; 
+    --hover-blue: #1e40af;
+    --bg-light: #f8fafc;
+    --text-main: #1f2937;
+    --danger: #ef4444;
 }
 
-/* 3. Ajustes Base y Reseteo */
 html {
-    scroll-behavior: smooth; /* Desplazamiento suave */
+    scroll-behavior: smooth;
 }
 
 body {
     font-family: 'Inter', sans-serif;
     background-color: var(--bg-light);
     color: var(--text-main);
-    -webkit-font-smoothing: antialiased; /* Suaviza los bordes de las letras */
+    -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     margin: 0;
     padding: 0;
 }
 
-/* 4. Barra de Desplazamiento Personalizada (Scrollbar Premium) */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -45,9 +37,7 @@ body {
     background: #94a3b8; 
 }
 
-/* 5. Animaciones Puras en CSS (Cero JavaScript) */
 
-/* Animación de entrada para el login y las tarjetas del panel */
 .animate-fade-in {
     animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -63,12 +53,10 @@ body {
     }
 }
 
-/* 6. Ajustes de Formularios (Inputs y Botones) */
 input {
     transition: all 0.3s ease;
 }
 
-/* Sombra corporativa al hacer clic en un input */
 input:focus {
     outline: none;
     border-color: var(--primary-blue);
@@ -79,12 +67,10 @@ button {
     transition: transform 0.1s ease, background-color 0.3s ease;
 }
 
-/* Pequeño efecto de presión al hacer clic en botones */
 button:active {
     transform: scale(0.98);
 }
 
-/* 7. Clases de Utilidad Específicas de la Marca */
 .bg-brand-blue {
     background-color: var(--primary-blue);
 }
