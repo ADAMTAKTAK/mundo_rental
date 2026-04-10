@@ -49,11 +49,14 @@ $resultado = $connection->query($query);
             <a href="tarifas.php" class="flex items-center gap-3 <?php echo basename($_SERVER['PHP_SELF']) == 'tarifas.php' ? 'bg-blue-800' : 'text-blue-200 hover:bg-blue-800 hover:text-white'; ?> px-4 py-3 rounded-lg font-medium transition-colors">
                 <i class="fa-solid fa-tags w-5"></i> Tarifas
             </a>
-            <a href="clientes.php" class="flex items-center gap-3 text-blue-200 hover:bg-blue-800 hover:text-white px-4 py-3 rounded-lg font-medium transition-colors">
+            <a href="clientes.php" class="flex items-center gap-3 <?php echo basename($_SERVER['PHP_SELF']) == 'clientes.php' ? 'bg-blue-800' : 'text-blue-200 hover:bg-blue-800 hover:text-white'; ?> px-4 py-3 rounded-lg font-medium transition-colors">
                 <i class="fa-solid fa-users w-5"></i> Clientes
             </a>
             <a href="alquileres.php" class="flex items-center gap-3 <?php echo basename($_SERVER['PHP_SELF']) == 'alquileres.php' ? 'bg-blue-800' : 'text-blue-200 hover:bg-blue-800 hover:text-white'; ?> px-4 py-3 rounded-lg font-medium transition-colors">
-                <i class="fa-solid fa-file-invoice-dollar w-5"></i> Contratos (Alquileres)
+                <i class="fa-solid fa-file-invoice-dollar w-5"></i> Contratos
+            </a>
+            <a href="reportes.php" class="flex items-center gap-3 <?php echo basename($_SERVER['PHP_SELF']) == 'reportes.php' ? 'bg-blue-800 text-white' : 'text-blue-200 hover:bg-blue-800 hover:text-white'; ?> px-4 py-3 rounded-lg font-medium transition-colors">
+                <i class="fa-solid fa-file-lines w-5"></i> Reportes
             </a>
         </nav>
         <div class="p-4 border-t border-blue-800">
